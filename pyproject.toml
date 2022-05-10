@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "rossum"
+version = "0.1.0"
+description = ""
+authors = ["Petr Šebek <petrsebek1@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+Flask = "^2.1.2"
+dramatiq = {extras = ["rabbitmq", "watch"], version = "^1.13.0"}
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
