@@ -8,6 +8,7 @@ authors = ["Petr Šebek <petrsebek1@gmail.com>"]
 python = "^3.10"
 Flask = "^2.1.2"
 dramatiq = {extras = ["rabbitmq", "watch"], version = "^1.13.0"}
+black = "^22.3.0"
 
 [tool.poetry.dev-dependencies]
 
