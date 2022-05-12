@@ -1,6 +1,7 @@
 import os.path
 
 from flask import Flask, request, send_from_directory
+from flask.typing import ResponseReturnValue
 import werkzeug.security
 
 import rossum.utils
@@ -12,7 +13,7 @@ app.config.from_object("rossum.settings")
 
 
 @app.route("/v1/post", methods=["POST"])
-def post():
+def post() -> ResponseReturnValue:
     if len(request.files) > 1:
         return "More than one file uploaded", 400
     if not request.files:
@@ -28,11 +29,13 @@ def post():
 
 
 @app.route("/v1/info/<document_id>")
-def info(document_id: str):
+def info(document_id: str) -> ResponseReturnValue:
     document_dir_path = werkzeug.security.safe_join(app.config["DATA_DIR"], document_id)
     document_path = werkzeug.security.safe_join(
         app.config["DATA_DIR"], f"{document_id}.pdf"
     )
+    if not os.path.exists(document_path):
+        return f"Document with id = {document_id} not found", 404
 
     if os.path.exists(document_dir_path):
         status = "done"
@@ -49,7 +52,7 @@ def info(document_id: str):
 
 
 @app.route("/v1/get/<document_id>/<int:page>")
-def get(document_id: str, page: int):
+def get(document_id: str, page: int) -> ResponseReturnValue:
     return send_from_directory(
         werkzeug.security.safe_join(app.config["DATA_DIR"], document_id), f"{page}.png"
     )
