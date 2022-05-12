@@ -1,13 +1,14 @@
 import os.path
 
 from flask import Flask, request, send_from_directory
+import werkzeug.security
 
 import rossum.utils
+import rossum.pdf
 
 
 app = Flask(__name__)
-
-DATA_DIR = "data/"
+app.config.from_object("rossum.settings")
 
 
 @app.route("/v1/post", methods=["POST"])
@@ -17,22 +18,38 @@ def post():
     if not request.files:
         return "No file uploaded", 400
     file = next(request.files.values())
-    task_id = rossum.utils.hash_file(file)
-    file.save(os.path.join(DATA_DIR, f"{task_id}.pdf"))
-    # TODO start the asynchronous task
-    return {"task_id": task_id}
+    document_id = rossum.utils.hash_file(file)
+    document_path = os.path.join(app.config["DATA_DIR"], f"{document_id}.pdf")
+    file.save(document_path)
+    rossum.pdf.pdf_to_png.send(
+        document_path, document_id, app.config["DATA_DIR"], app.config["IMAGE_SIZE"]
+    )
+    return {"document_id": document_id}
 
 
-@app.route("/v1/info/<task_id>")
-def info(task_id: str):
-    # TODO retrieve state of the task
+@app.route("/v1/info/<document_id>")
+def info(document_id: str):
+    document_dir_path = werkzeug.security.safe_join(app.config["DATA_DIR"], document_id)
+    document_path = werkzeug.security.safe_join(
+        app.config["DATA_DIR"], f"{document_id}.pdf"
+    )
+
+    if os.path.exists(document_dir_path):
+        status = "done"
+    else:
+        status = "in_progress"
+
+    pages = rossum.pdf.pdf_info(document_path)["Pages"]
+
     return {
-        "task_id": task_id,
-        "status": "unknown",
-        "pages": 0,
+        "document_id": document_id,
+        "status": status,
+        "pages": pages,
     }
 
 
-@app.route("/v1/get/<task_id>/<int:page>")
-def get(task_id: str, page: int):
-    return send_from_directory(DATA_DIR, task_id, f"{page}.png")
+@app.route("/v1/get/<document_id>/<int:page>")
+def get(document_id: str, page: int):
+    return send_from_directory(
+        werkzeug.security.safe_join(app.config["DATA_DIR"], document_id), f"{page}.png"
+    )

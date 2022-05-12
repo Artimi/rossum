@@ -7,7 +7,7 @@ authors = ["Petr Šebek <petrsebek1@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.10"
 Flask = "^2.1.2"
-dramatiq = {extras = ["rabbitmq", "watch"], version = "^1.13.0"}
+dramatiq = {extras = ["redis"], version = "^1.13.0"}
 black = "^22.3.0"
 pdf2image = "^1.16.0"
 Pillow = "^9.1.0"
