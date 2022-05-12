@@ -27,6 +27,10 @@ def rename_images(paths: list[str]) -> None:
 
 @dramatiq.actor(max_retries=3)
 def pdf_to_png(path: str, document_id: str, data_dir: str, max_size: tuple[int, int]) -> None:
+    '''
+    Convert pdf at `path` to a series of png images stored in `data_dir`/`document_id`.
+    Each image will be of a size `max_size`.
+    '''
     output_folder = os.path.join(data_dir, document_id)
     try:
         os.mkdir(output_folder)

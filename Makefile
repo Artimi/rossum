@@ -1,5 +1,8 @@
 test:
 	UNIT_TESTS=1 pytest -v
 
-run:
+build:
+	docker-compose build
+
+run: build
 	docker-compose up -V
