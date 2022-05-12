@@ -11,6 +11,7 @@ dramatiq = {extras = ["redis"], version = "^1.13.0"}
 black = "^22.3.0"
 pdf2image = "^1.16.0"
 Pillow = "^9.1.0"
+gunicorn = "^20.1.0"
 
 [tool.poetry.dev-dependencies]
 

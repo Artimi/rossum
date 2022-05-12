@@ -5,7 +5,7 @@ import dramatiq
 import dramatiq.brokers.redis
 import pdf2image
 
-broker = dramatiq.brokers.redis.RedisBroker()
+broker = dramatiq.brokers.redis.RedisBroker(host='redis')
 dramatiq.set_broker(broker)
 
 

@@ -1,2 +1,2 @@
-DATA_DIR = "/home/petr/projects/rossum/data/"
+DATA_DIR = "/data/"
 IMAGE_SIZE = (1200, 1600)

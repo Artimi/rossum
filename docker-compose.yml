@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - "data:/data"
+  redis:
+    image: "redis:alpine"
+  worker:
+    build: .
+    command: ["dramatiq", "rossum.pdf"]
+    volumes:
+      - "data:/data"
+volumes:
+  data:
